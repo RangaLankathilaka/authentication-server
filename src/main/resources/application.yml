@@ -16,3 +16,6 @@ spring:
     sql-dialect: org.hibernate.dialect.MySQL5Dialect
   main:
     banner-mode: console
+  data:
+    rest:
+      base-path: /api
