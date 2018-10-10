@@ -10,7 +10,10 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EntityListeners;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -21,23 +24,18 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractAuditEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @CreatedBy
     @JsonIgnore
-    @Column(name = "created_by", nullable = true, length = 50, updatable = false)
+    @Column(name = "created_by", length = 50, updatable = false)
     private String createdBy;
 
     @CreatedDate
     @JsonIgnore
-    @Column(name = "created_date", nullable = true)
     private Date createdDate = new Date();
 
     @JsonIgnore
     @LastModifiedBy
-    @Column(name = "last_modified_by", nullable = true, length = 50)
+    @Column(name = "last_modified_by", length = 50)
     private String lastModifiedBy;
 
     @JsonIgnore
