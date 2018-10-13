@@ -2,7 +2,9 @@ package com.osanda.oauth2.authenticationserver;
 
 import Utils.RoleUtil;
 import com.osanda.oauth2.authenticationserver.models.Role;
+import com.osanda.oauth2.authenticationserver.models.User;
 import com.osanda.oauth2.authenticationserver.repositories.RoleRepository;
+import com.osanda.oauth2.authenticationserver.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +14,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -23,10 +27,8 @@ public class AuthenticationServerApplicationTests {
     private @Inject
     RoleRepository roleRepository;
 
-    @Test
-    public void contextLoads() {
-    }
-
+    private @Inject
+    UserRepository userRepository;
 
     @Test
     public void roleTest() {
@@ -61,8 +63,44 @@ public class AuthenticationServerApplicationTests {
                 e.printStackTrace();
             }
         }
+    }// roleTest()
 
+
+    @Test
+    public void userCreation() {
+
+
+        if (roleRepository.findAll().size() < 0) {
+            this.roleTest();
+        }
+
+        User admin = userRepository.findFirstByName("admin");
+
+        Set<Role> roles = new HashSet<>();
+
+        roles.add(roleRepository.findFirsByName(RoleUtil.USER));
+        roles.add(roleRepository.findFirsByName(RoleUtil.ADMIN));
+
+        if (admin == null) {
+            admin = new User();
+            admin.setName("admin");
+            admin.setPassword("password");
+            admin.setActive(true);
+            admin.setRoles(roles);
+            admin.setEmail("osanda1989@gmail.com");
+
+            log.info("admin user not found creating new user with username admin and default password");
+        }
+
+
+        try {
+
+            userRepository.save(admin);
+            log.info("user admin saved.");
+
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+        }
 
     }
-
 }
